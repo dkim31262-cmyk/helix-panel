@@ -1,0 +1,11 @@
+name: helix-contract
+on:
+  push:
+    branches: [main]
+  pull_request:
+jobs:
+  lock:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: node test.mjs

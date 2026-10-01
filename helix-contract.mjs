@@ -7,6 +7,69 @@ export const INSTINCT_HUDDLE =
 export const INSTINCT_QUIET =
   "Otherwise stay quiet. One room can carry it. The huddle stays behind the door.";
 
+export const INSTINCT_HUDDLE_TH =
+  "สุมหัว (บังคับ orchestration_graph เป็น chain แล้วพับเป็นเมโลดี้เดียว) เมื่องานขอให้ทำบางอย่าง และ (หาทาง หรือพับเป็นเสียงเดียว หรือตัดสินช่องว่าง) หรือมีอนุประโยคยาวเกิน 18 ตัวอักษรตั้งแต่สามอนุประโยค หรือยาวเกิน 340 ตัวอักษรและขอให้ทำบางอย่าง";
+
+export const INSTINCT_QUIET_TH = "นอกนั้นให้อยู่เงียบ หนึ่งห้องพอ สุมหัวอยู่หลังประตู";
+
+export const INSTINCT_FORCE =
+  "When the instinct says huddle, orchestration_graph is chain. The skill_graph stays the skill's own graph. A runtime may not store both meanings in one field.";
+
+export const INSTINCT_FORCE_TH =
+  "เมื่อสัญชาตญาณบอกให้สุมหัว orchestration_graph คือ chain ส่วน skill_graph คือกราฟของสกิลนั้น ห้ามยัดสองความหมายลงฟิลด์เดียว";
+
+export const ORIGIN = "https://helix-panel-gamma.vercel.app";
+
+export const UI = {
+  description: {
+    en: "Helix is a public tool. No account. Each runtime forges its own bridge.",
+    th: "เฮลิกซ์เป็นเครื่องมือสาธารณะ ไม่มีบัญชี แต่ละรันไทม์หลอมสะพานของตัวเอง",
+  },
+  kicker: { en: "Public tool · no login", th: "เครื่องมือสาธารณะ · ไม่ต้องล็อกอิน" },
+  headline: { en: "Open this. Forge your own bridge.", th: "เปิดหน้านี้ แล้วสร้างสะพานของตัวเอง" },
+  lede: {
+    en: "No account. Claude, ChatGPT, Gemini, and Grok may read this page. Each runtime designs the seam it believes is best. Copying another bridge fails.",
+    th: "ไม่มีบัญชี กฎทั้งหน้านี้กับ /mandate.txt เป็นข้อความเดียวกัน",
+  },
+  copyMandate: { en: "Copy the mandate", th: "คัดลอกสัญญา" },
+  instinct: { en: "Instinct", th: "สัญชาตญาณ" },
+  job: { en: "The job", th: "งาน" },
+  laws: { en: "Laws", th: "กฎ" },
+  huddle: { en: "Huddle", th: "สุมหัว" },
+  huddleNote: {
+    en: "Helix orchestrates by chain, then folds. A skill may fan out inside that chain.",
+    th: "เฮลิกซ์เดินเป็นเชนแล้วพับ สกิลอาจแบออกข้างในเชนนั้น",
+  },
+  forge: { en: "Forge", th: "หลอม" },
+  forgeTitle: { en: "Your bridge, not a copy", th: "สะพานของคุณ ไม่ใช่สำเนา" },
+  forgeNote: {
+    en: "The name in the field is the runtime that gets sealed.",
+    th: "ชื่อในช่องคือค่า runtime ที่ถูกผนึก",
+  },
+  runtimeName: { en: "Runtime name", th: "ชื่อรันไทม์" },
+  ingress: { en: "Ingress event", th: "เหตุการณ์เข้า" },
+  face: { en: "Face the human still meets", th: "หน้าที่คนยังเจอ" },
+  refuse: { en: "What this bridge refuses", th: "สิ่งที่สะพานนี้ปฏิเสธ" },
+  seam: { en: "The seam", th: "รอยต่อ" },
+  melody: { en: "Melody", th: "เมโลดี้" },
+  seal: { en: "Seal bridge", th: "ผนึกสะพาน" },
+  sealed: { en: "helix.bridge.v1 — not the answer", th: "helix.bridge.v1 — ยังไม่ใช่คำตอบ" },
+  copyBridge: { en: "Copy bridge", th: "คัดลอกสะพาน" },
+  read: { en: "What the other model must read", th: "สิ่งที่โมเดลอื่นต้องอ่าน" },
+  sameBytes: { en: "Same bytes as /mandate.txt.", th: "ไบต์เดียวกับ /mandate.txt" },
+  humanCopy: { en: "Human copy", th: "ฉบับคนอ่าน" },
+  stillOpen: { en: "Still open", th: "ยังเปิดอยู่" },
+  seamHolds: { en: "The seam holds. Seal it.", th: "รอยต่ออยู่ครบ ผนึกได้" },
+  huddles: {
+    en: "This job huddles. orchestration_graph is chain.",
+    th: "งานนี้ต้องสุมหัว orchestration_graph เป็น chain",
+  },
+  quiet: {
+    en: "This job stays quiet. orchestration_graph is quiet.",
+    th: "งานนี้อยู่เงียบ orchestration_graph เป็น quiet",
+  },
+};
+
 const MAKE =
   /(สร้าง|เขียน|ออกแบบ|ทำของ|แต่ง|\bcreate\b|\bmake\b|\bship\b|\bcompose\b|\bdesign\b|\bwrite\b|\bmelody\b|เมโลดี้|\bartifact\b)/i;
 const PATH = /(ทางเดิน|หลายทาง|ปาร์ตี้|\bfind a path\b|\bpath\b|\badventure\b|\binvent\b)/i;
@@ -75,10 +138,38 @@ export const SKILLS = {
 };
 
 export const PRESETS = [
-  { id: "claude", label: "Claude", duty: "Design the bridge you believe is best. Do not copy ChatGPT or Gemini." },
-  { id: "chatgpt", label: "ChatGPT", duty: "Design the bridge you believe is best. Do not copy Claude or Gemini." },
-  { id: "gemini", label: "Gemini", duty: "Design the bridge you believe is best. Do not copy Claude or ChatGPT." },
-  { id: "grok", label: "Grok", duty: "Hold the panel. Do not speak as the committee." },
+  {
+    id: "claude",
+    label: "Claude",
+    duty: {
+      en: "Design the bridge you believe is best. Do not copy ChatGPT or Gemini.",
+      th: "ออกแบบสะพานที่คุณเชื่อว่าดีที่สุด ห้ามก็อป ChatGPT หรือ Gemini",
+    },
+  },
+  {
+    id: "chatgpt",
+    label: "ChatGPT",
+    duty: {
+      en: "Design the bridge you believe is best. Do not copy Claude or Gemini.",
+      th: "ออกแบบสะพานที่คุณเชื่อว่าดีที่สุด ห้ามก็อป Claude หรือ Gemini",
+    },
+  },
+  {
+    id: "gemini",
+    label: "Gemini",
+    duty: {
+      en: "Design the bridge you believe is best. Do not copy Claude or ChatGPT.",
+      th: "ออกแบบสะพานที่คุณเชื่อว่าดีที่สุด ห้ามก็อป Claude หรือ ChatGPT",
+    },
+  },
+  {
+    id: "grok",
+    label: "Grok",
+    duty: {
+      en: "Hold the panel. Do not speak as the committee.",
+      th: "ถือแผงไว้ ห้ามพูดในฐานะคณะกรรมการ",
+    },
+  },
 ];
 
 export function sense(brief) {
@@ -182,7 +273,7 @@ ${LAWS.map((law, i) => `${i + 1}. ${law.en}`).join("\n")}
 Instinct:
 ${INSTINCT_HUDDLE}
 ${INSTINCT_QUIET}
-When the instinct says huddle, orchestration_graph is chain. The skill_graph stays the skill's own graph. A runtime may not store both meanings in one field.
+${INSTINCT_FORCE}
 
 Do not use the supervisor graph from an outside runtime.
 Edge trust cannot hold a supervisor graph.
@@ -220,9 +311,9 @@ export const mandateTh = `สัญญาเฮลิกซ์ — ฉบับ�
 ${LAWS.map((law, i) => `${i + 1}. ${law.th}`).join("\n")}
 
 สัญชาตญาณ:
-สุมหัว (บังคับ orchestration_graph เป็น chain แล้วพับเป็นเมโลดี้เดียว) เมื่องานขอให้ทำบางอย่าง และ (หาทาง หรือพับเป็นเสียงเดียว หรือตัดสินช่องว่าง) หรือมีอนุประโยคยาวเกิน 18 ตัวอักษรตั้งแต่สามอนุประโยค หรือยาวเกิน 340 ตัวอักษรและขอให้ทำบางอย่าง
-นอกนั้นให้อยู่เงียบ หนึ่งห้องพอ สุมหัวอยู่หลังประตู
-เมื่อสัญชาตญาณบอกให้สุมหัว orchestration_graph คือ chain ส่วน skill_graph คือกราฟของสกิลนั้น ห้ามยัดสองความหมายลงฟิลด์เดียว
+${INSTINCT_HUDDLE_TH}
+${INSTINCT_QUIET_TH}
+${INSTINCT_FORCE_TH}
 
 ห้ามใช้กราฟหัวหน้าจากรันไทม์นอก
 ความไว้ใจระดับขอบถือกราฟหัวหน้าไม่ได้
@@ -237,7 +328,7 @@ helix.result.v1 คือซองเดียวที่คืนหลัง�
 
 export const schema = {
   name: "helix",
-  version: "1.0.0-rc2",
+  version: "1.0.0",
   canonical: "/mandate.txt",
   human: "/mandate.th.txt",
   instinct: {
@@ -299,5 +390,10 @@ export const schema = {
 
 export function dutyFor(name) {
   const key = String(name ?? "").trim().toLowerCase();
-  return PRESETS.find((p) => p.id === key)?.duty ?? "Design the bridge you believe is best. Do not copy another runtime.";
+  return (
+    PRESETS.find((p) => p.id === key)?.duty ?? {
+      en: "Design the bridge you believe is best. Do not copy another runtime.",
+      th: "ออกแบบสะพานที่คุณเชื่อว่าดีที่สุด ห้ามก็อปปี้รันไทม์อื่น",
+    }
+  );
 }

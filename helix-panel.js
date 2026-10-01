@@ -1,4 +1,4 @@
-import { SKILLS, dutyFor, forgeBridge, missingFields, sense, mandateEn } from "./helix-contract.mjs";
+import { SKILLS, UI, dutyFor, forgeBridge, missingFields, sense, mandateEn } from "./helix-contract.mjs";
 const state = { skill: "adventure" };
 let sealed = "";
 const $ = (id) => document.getElementById(id);
@@ -12,16 +12,31 @@ function clearSeal() {
   $("sealed-label").hidden = true;
   $("copy-bridge").hidden = true;
 }
+function setLang(mode) {
+  document.documentElement.className = mode;
+  document.documentElement.lang = mode === "lang-th" ? "th" : "en";
+}
+function pair(id, en, th) {
+  const node = $(id);
+  const [a, b] = node.querySelectorAll("span");
+  a.textContent = en;
+  b.textContent = th;
+}
 function paint() {
   const felt = sense($("job").value);
-  $("instinct").textContent = felt.huddle ? "This job huddles. orchestration_graph is chain." : "This job stays quiet. orchestration_graph is quiet.";
+  pair("instinct", felt.huddle ? UI.huddles.en : UI.quiet.en, felt.huddle ? UI.huddles.th : UI.quiet.th);
   $("orch").textContent = felt.orchestration_graph;
   const skill = SKILLS[state.skill];
   $("skill-graph").textContent = skill.graph;
-  $("duty").textContent = dutyFor($("name").value);
+  const duty = dutyFor($("name").value);
+  pair("duty", duty.en, duty.th);
   const gaps = missingFields(fields());
+  pair(
+    "gaps",
+    gaps.length ? UI.stillOpen.en + ": " + gaps.join(", ") : UI.seamHolds.en,
+    gaps.length ? UI.stillOpen.th + ": " + gaps.join(", ") : UI.seamHolds.th,
+  );
   const box = $("gaps");
-  box.textContent = gaps.length ? "Still open: " + gaps.join(", ") : "The seam holds. Seal it.";
   box.className = gaps.length ? "danger" : "muted";
   $("seal").disabled = gaps.length > 0;
   document.querySelectorAll("[data-run]").forEach((el) => { el.className = "chip " + (el.dataset.run === $("name").value.trim().toLowerCase() ? "on" : "off"); });
@@ -51,7 +66,7 @@ $("seal").onclick = () => {
   copy.hidden = false;
   copy.onclick = () => navigator.clipboard.writeText(sealed);
 };
-$("lang-both").onclick = () => { document.documentElement.className = ""; };
-$("lang-en").onclick = () => { document.documentElement.className = "lang-en"; };
-$("lang-th").onclick = () => { document.documentElement.className = "lang-th"; };
+$("lang-both").onclick = () => setLang("");
+$("lang-en").onclick = () => setLang("lang-en");
+$("lang-th").onclick = () => setLang("lang-th");
 paint();

@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
-import { forgeBridge, mandateEn, mandateTh, schema, sense } from "./helix-contract.mjs";
+import { LAWS, ORIGIN, SKILLS, UI, forgeBridge, mandateEn, mandateTh, schema, sense } from "./helix-contract.mjs";
+import { renderIndex, renderedFiles } from "./render.mjs";
 
 const root = new URL(".", import.meta.url);
 const read = (name) => readFileSync(new URL(name, root), "utf8");
@@ -12,15 +13,31 @@ function assert(cond, msg) {
   }
 }
 
-const mandate = read("mandate.txt");
+const files = renderedFiles();
+for (const [name, body] of Object.entries(files)) {
+  assert(read(name) === body, name + " was edited by hand. Run node render.mjs. Do not keep a second copy.");
+}
+
 const html = read("index.html");
-const open = '<pre id="mandate">';
-const at = html.indexOf(open);
-const pre = html.slice(at + open.length, html.indexOf("</pre>", at));
-assert(pre === mandate, "index.html mandate block is not mandate.txt");
-assert(mandate === mandateEn, "mandate.txt is not rendered from helix-contract.mjs");
-assert(read("mandate.th.txt") === mandateTh, "mandate.th.txt is not rendered from helix-contract.mjs");
-assert(JSON.stringify(JSON.parse(read("helix.schema.json"))) === JSON.stringify(schema), "helix.schema.json drifted");
+function block(id) {
+  const at = html.indexOf(`id="${id}"`);
+  const start = html.indexOf(">", at) + 1;
+  return html.slice(start, html.indexOf("</pre>", start));
+}
+assert(block("mandate") === mandateEn, "embedded mandate is not the contract");
+assert(block("mandate-th") === mandateTh, "embedded Thai mandate is not the contract");
+assert(html.includes(`<link rel="canonical" href="${ORIGIN}/" />`), "canonical missing");
+assert(html.includes(`<meta property="og:image" content="${ORIGIN}/og.jpg" />`), "og:image missing");
+assert(html.includes('href="favicon.svg"'), "favicon missing");
+for (const law of LAWS) assert(html.includes(law.en) && html.includes(law.th), "law missing from the page: " + law.en);
+for (const skill of Object.values(SKILLS)) assert(html.includes(skill.en) && html.includes(skill.th), "skill missing: " + skill.id);
+for (const key of ["forgeTitle", "seal", "runtimeName", "melody", "refuse"]) {
+  assert(html.includes(UI[key].en) && html.includes(UI[key].th), "UI string not bilingual: " + key);
+}
+assert(JSON.stringify(JSON.parse(read("helix.schema.json"))) === JSON.stringify(schema), "schema parse drifted");
+
+const og = readFileSync(new URL("og.jpg", root));
+assert(og[0] === 0xff && og[1] === 0xd8 && og.length > 1000, "og.jpg is not the share image");
 
 const path = sense("Create a bridge and find a path.");
 assert(path.huddle === true && path.orchestration_graph === "chain", "Create a bridge and find a path. must huddle on chain");
@@ -44,9 +61,10 @@ assert(bridge.orchestration_graph === "chain", "huddle must force orchestration_
 assert(bridge.skill_graph === "fanout", "adventure keeps its own skill_graph");
 assert(bridge.melody === "one sentence the learner can carry", "melody must be on the bridge");
 assert(!("graph" in bridge), "one graph field is the collision");
+assert(renderIndex() === html, "renderIndex is not the page on disk");
 
 if (failed) {
   console.error(failed + " failed");
   process.exit(1);
 }
-console.log("locked: one contract, page matches file, instinct matches the sentence");
+console.log("locked: one contract, generated page, Thai and English, share tags, instinct");

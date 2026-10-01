@@ -6,7 +6,18 @@
 <title>Helix</title>
 <meta name="description" content="Helix is a public tool. No account. Each runtime forges its own bridge." />
 <meta name="robots" content="index,follow" />
+<link rel="canonical" href="https://helix-panel-gamma.vercel.app/" />
 <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Helix" />
+<meta property="og:title" content="Helix — forge your own bridge" />
+<meta property="og:description" content="Helix is a public tool. No account. Each runtime forges its own bridge." />
+<meta property="og:url" content="https://helix-panel-gamma.vercel.app/" />
+<meta property="og:image" content="https://helix-panel-gamma.vercel.app/og.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Helix — forge your own bridge" />
+<meta name="twitter:description" content="Helix is a public tool. No account. Each runtime forges its own bridge." />
+<meta name="twitter:image" content="https://helix-panel-gamma.vercel.app/og.jpg" />
 <style>
   :root { --bg:#f3f1ec; --surface:#e8e4db; --raised:#faf9f6; --fg:#161513; --muted:#5c5852; --accent:#2f3d4a; --accent-fg:#f4f2ed; --danger:#7a2e24; --line:#d4cfc4; }
   * { box-sizing: border-box; }
@@ -38,11 +49,13 @@
   :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   html.lang-en [lang="th"] { display: none; }
   html.lang-th [lang="en"] { display: none; }
+  .kicker span[lang="th"]::before, button span[lang="th"]::before { content: " · "; }
+  html.lang-en span[lang="th"]::before, html.lang-th span[lang="th"]::before { content: none; }
 </style>
 </head>
 <body>
 <main>
-  <p class="kicker">Public tool · no login</p>
+  <p class="kicker"><span lang="en">Public tool · no login</span><span lang="th">เครื่องมือสาธารณะ · ไม่ต้องล็อกอิน</span></p>
   <div class="row">
     <button type="button" class="ghost" id="lang-both">TH + EN</button>
     <button type="button" class="ghost" id="lang-en">EN</button>
@@ -53,20 +66,21 @@
   <p class="muted" lang="en">No account. Claude, ChatGPT, Gemini, and Grok may read this page. Each runtime designs the seam it believes is best. Copying another bridge fails.</p>
   <p class="muted" lang="th">ไม่มีบัญชี กฎทั้งหน้านี้กับ /mandate.txt เป็นข้อความเดียวกัน</p>
   <div class="row">
-    <button class="primary" id="copy-mandate" type="button">Copy the mandate</button>
+    <button class="primary" id="copy-mandate" type="button"><span lang="en">Copy the mandate</span><span lang="th">คัดลอกสัญญา</span></button>
     <a class="btn ghost" href="mandate.txt">/mandate.txt</a>
     <a class="btn ghost" href="mandate.th.txt">/mandate.th.txt</a>
     <a class="btn ghost" href="helix.schema.json">schema</a>
   </div>
   <section>
-    <p class="kicker">Instinct</p>
-    <p id="instinct-rule" lang="en">Huddle (force orchestration_graph chain, then fold one melody) when the brief asks to make something AND (find a path, fold one voice, or judge a gap), OR the brief has three or more clauses longer than 18 characters, OR the brief is longer than 340 characters and asks to make something. Otherwise stay quiet. One room can carry it. The huddle stays behind the door.</p>
-    <p id="instinct" lang="en"></p>
-    <label for="job"><span lang="en">The job</span> <span lang="th">งาน</span></label>
+    <p class="kicker"><span lang="en">Instinct</span><span lang="th">สัญชาตญาณ</span></p>
+    <p lang="en">Huddle (force orchestration_graph chain, then fold one melody) when the brief asks to make something AND (find a path, fold one voice, or judge a gap), OR the brief has three or more clauses longer than 18 characters, OR the brief is longer than 340 characters and asks to make something. Otherwise stay quiet. One room can carry it. The huddle stays behind the door. When the instinct says huddle, orchestration_graph is chain. The skill_graph stays the skill's own graph. A runtime may not store both meanings in one field.</p>
+    <p lang="th">สุมหัว (บังคับ orchestration_graph เป็น chain แล้วพับเป็นเมโลดี้เดียว) เมื่องานขอให้ทำบางอย่าง และ (หาทาง หรือพับเป็นเสียงเดียว หรือตัดสินช่องว่าง) หรือมีอนุประโยคยาวเกิน 18 ตัวอักษรตั้งแต่สามอนุประโยค หรือยาวเกิน 340 ตัวอักษรและขอให้ทำบางอย่าง นอกนั้นให้อยู่เงียบ หนึ่งห้องพอ สุมหัวอยู่หลังประตู เมื่อสัญชาตญาณบอกให้สุมหัว orchestration_graph คือ chain ส่วน skill_graph คือกราฟของสกิลนั้น ห้ามยัดสองความหมายลงฟิลด์เดียว</p>
+    <p id="instinct"><span lang="en">This job stays quiet. orchestration_graph is quiet.</span><span lang="th">งานนี้อยู่เงียบ orchestration_graph เป็น quiet</span></p>
+    <label for="job"><span lang="en">The job</span><span lang="th">งาน</span></label>
     <textarea id="job">A student is stuck on why a fever is not always infection. Return notes the teacher can speak.</textarea>
   </section>
   <section style="margin-top:28px">
-    <p class="kicker">Laws</p>
+    <p class="kicker"><span lang="en">Laws</span><span lang="th">กฎ</span></p>
     <div class="grid two"><article class="law"><p class="kicker">01</p><p lang="en">Keep your own face. This panel may not rename you.</p><p class="muted" lang="th">รักษาหน้าตัวเอง แผงนี้ห้ามเปลี่ยนชื่อคุณ</p></article>
 <article class="law"><p class="kicker">02</p><p lang="en">Talk only to Relay. Never to the raw fleet.</p><p class="muted" lang="th">คุยกับ Relay เท่านั้น ห้ามคุยกับกองเรือดิบ</p></article>
 <article class="law"><p class="kicker">03</p><p lang="en">One envelope out. The caller never sees another skill's draft.</p><p class="muted" lang="th">ซองเดียวออกไป ผู้เรียกไม่เห็นร่างของสกิลอื่น</p></article>
@@ -75,16 +89,18 @@
 <article class="law"><p class="kicker">06</p><p lang="en">Huddle, then fold. The Melody of Life is one line.</p><p class="muted" lang="th">สุมหัว แล้วพับ เมโลดี้แห่งชีวิตคือบรรทัดเดียว</p></article></div>
   </section>
   <section style="margin-top:28px">
-    <p class="kicker">Huddle</p>
+    <p class="kicker"><span lang="en">Huddle</span><span lang="th">สุมหัว</span></p>
     <p class="muted" lang="en">Helix orchestrates by chain, then folds. A skill may fan out inside that chain.</p>
+    <p class="muted" lang="th">เฮลิกซ์เดินเป็นเชนแล้วพับ สกิลอาจแบออกข้างในเชนนั้น</p>
     <div class="grid three" id="skills"><button type="button" class="card on" data-skill="adventure"><span class="kicker">create-mode</span><span class="name">Adventure</span><span class="muted" lang="en">A party that plays. The panel never becomes a second character. Seam: the player still meets one party. Skill graph: fanout.</span><span class="muted" lang="th">ปาร์ตี้ที่เล่น แผงไม่กลายเป็นตัวละครคนที่สอง กราฟของสกิลคือ fanout ภายในเชน</span></button>
 <button type="button" class="card" data-skill="artifact"><span class="kicker">creative-artifact-ship</span><span class="name">Artifact</span><span class="muted" lang="en">Make one thing and ship it. The panel only carries the envelope. Seam: the maker keeps the signature. Skill graph: chain.</span><span class="muted" lang="th">ทำของชิ้นเดียวแล้วส่งออก แผงแค่ถือซอง กราฟของสกิลคือ chain</span></button>
 <button type="button" class="card" data-skill="grok-one"><span class="kicker">grok-one</span><span class="name">Grok One</span><span class="muted" lang="en">One voice. Other skills may advise. The person never hears a committee. Seam: advice folds before it speaks. Skill graph: chain.</span><span class="muted" lang="th">เสียงเดียว สกิลอื่นแนะนำได้ แต่คนไม่เคยได้ยินคณะกรรมการ</span></button></div>
   </section>
   <section class="card" style="margin-top:28px">
-    <p class="kicker">Forge</p>
-    <h2 class="name" lang="en">Your bridge, not a copy</h2>
-    <p class="muted" id="duty" lang="en"></p>
+    <p class="kicker"><span lang="en">Forge</span><span lang="th">หลอม</span></p>
+    <h2 class="name"><span lang="en">Your bridge, not a copy</span><span lang="th">สะพานของคุณ ไม่ใช่สำเนา</span></h2>
+    <p class="muted" id="duty"><span lang="en">Design the bridge you believe is best. Do not copy ChatGPT or Gemini.</span><span lang="th">ออกแบบสะพานที่คุณเชื่อว่าดีที่สุด ห้ามก็อป ChatGPT หรือ Gemini</span></p>
+    <p class="muted" lang="en">The name in the field is the runtime that gets sealed.</p>
     <p class="muted" lang="th">ชื่อในช่องคือค่า runtime ที่ถูกผนึก</p>
     <div class="row" id="runtimes"><button type="button" class="chip on" data-run="claude">Claude</button>
 <button type="button" class="chip off" data-run="chatgpt">ChatGPT</button>
@@ -92,35 +108,35 @@
 <button type="button" class="chip off" data-run="grok">Grok</button></div>
     <div class="grid two">
       <div>
-        <label for="name"><span lang="en">Runtime name</span></label>
+        <label for="name"><span lang="en">Runtime name</span><span lang="th">ชื่อรันไทม์</span></label>
         <input id="name" value="claude" />
       </div>
       <div>
-        <label for="ingress"><span lang="en">Ingress event</span></label>
+        <label for="ingress"><span lang="en">Ingress event</span><span lang="th">เหตุการณ์เข้า</span></label>
         <input id="ingress" value="claude.ask" spellcheck="false" />
       </div>
     </div>
-    <label for="face"><span lang="en">Face the human still meets</span></label>
+    <label for="face"><span lang="en">Face the human still meets</span><span lang="th">หน้าที่คนยังเจอ</span></label>
     <input id="face" />
-    <label for="refuse"><span lang="en">What this bridge refuses</span></label>
+    <label for="refuse"><span lang="en">What this bridge refuses</span><span lang="th">สิ่งที่สะพานนี้ปฏิเสธ</span></label>
     <textarea id="refuse"></textarea>
-    <label for="seam"><span lang="en">The seam</span></label>
+    <label for="seam"><span lang="en">The seam</span><span lang="th">รอยต่อ</span></label>
     <textarea id="seam">The player still meets one party.</textarea>
-    <label for="melody"><span lang="en">Melody</span></label>
+    <label for="melody"><span lang="en">Melody</span><span lang="th">เมโลดี้</span></label>
     <textarea id="melody"></textarea>
     <div class="grid two" style="margin-top:12px">
       <p class="readout"><span class="kicker">orchestration_graph</span><span class="name" id="orch">quiet</span></p>
       <p class="readout"><span class="kicker">skill_graph</span><span class="name" id="skill-graph">fanout</span></p>
     </div>
-    <p id="gaps" class="danger">Still open: face, refuse, melody</p>
-    <button class="primary" id="seal" type="button" disabled>Seal bridge</button>
-    <p class="kicker" id="sealed-label" hidden>helix.bridge.v1 — not the answer</p>
+    <p id="gaps" class="danger"><span lang="en">Still open: face, refuse, melody</span><span lang="th">ยังเปิดอยู่: face, refuse, melody</span></p>
+    <button class="primary" id="seal" type="button" disabled><span lang="en">Seal bridge</span><span lang="th">ผนึกสะพาน</span></button>
+    <p class="kicker" id="sealed-label" hidden><span lang="en">helix.bridge.v1 — not the answer</span><span lang="th">helix.bridge.v1 — ยังไม่ใช่คำตอบ</span></p>
     <pre id="sealed" hidden></pre>
-    <div class="row"><button class="ghost" id="copy-bridge" type="button" hidden>Copy bridge</button></div>
+    <div class="row"><button class="ghost" id="copy-bridge" type="button" hidden><span lang="en">Copy bridge</span><span lang="th">คัดลอกสะพาน</span></button></div>
   </section>
   <article style="margin-top:28px">
-    <p class="kicker" lang="en">What the other model must read</p>
-    <p class="muted" lang="en">Same bytes as <a href="mandate.txt">/mandate.txt</a>.</p>
+    <p class="kicker"><span lang="en">What the other model must read</span><span lang="th">สิ่งที่โมเดลอื่นต้องอ่าน</span></p>
+    <p class="muted"><span lang="en">Same bytes as /mandate.txt.</span><span lang="th">ไบต์เดียวกับ /mandate.txt</span> <a href="mandate.txt">/mandate.txt</a></p>
     <pre id="mandate">HELIX BRIDGE MANDATE
 You opened a public tool. No account is required.
 You MUST forge your own bridge. Copying another runtime is a failed seam.
@@ -186,7 +202,7 @@ Return helix.result.v1 only, after the fold:
   "trust": "edge"
 }
 </pre>
-    <p class="kicker" lang="th">ฉบับคนอ่าน</p>
+    <p class="kicker"><span lang="en">Human copy</span><span lang="th">ฉบับคนอ่าน</span></p>
     <pre lang="th" id="mandate-th">สัญญาเฮลิกซ์ — ฉบับคนอ่าน
 ไฟล์นี้เป็นคำแปลจากสัญญาเดียวกัน ไม่ใช่สัญญาอีกฉบับ เครื่องอ่านให้ยึด /mandate.txt
 
