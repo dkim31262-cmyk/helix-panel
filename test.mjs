@@ -27,6 +27,8 @@ function block(id) {
 assert(block("mandate") === mandateEn, "embedded mandate is not the contract");
 assert(block("mandate-th") === mandateTh, "embedded Thai mandate is not the contract");
 assert(html.includes(`<link rel="canonical" href="${ORIGIN}/" />`), "canonical missing");
+assert(html.includes(`id="door"`) && html.includes(UI.door.en) && html.includes(UI.door.th), "the public door is missing");
+assert(html.includes(`${ORIGIN}/`), "the member link is missing");
 assert(html.includes(`<meta property="og:image" content="${ORIGIN}/og.jpg" />`), "og:image missing");
 assert(html.includes('href="favicon.svg"'), "favicon missing");
 for (const law of LAWS) assert(html.includes(law.en) && html.includes(law.th), "law missing from the page: " + law.en);

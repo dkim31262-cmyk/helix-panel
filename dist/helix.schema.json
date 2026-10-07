@@ -1,0 +1,81 @@
+{
+  "name": "helix",
+  "version": "1.0.0",
+  "canonical": "/mandate.txt",
+  "human": "/mandate.th.txt",
+  "instinct": {
+    "huddle": "Huddle (force orchestration_graph chain, then fold one melody) when the brief asks to make something AND (find a path, fold one voice, or judge a gap), OR the brief has three or more clauses longer than 18 characters, OR the brief is longer than 340 characters and asks to make something.",
+    "quiet": "Otherwise stay quiet. One room can carry it. The huddle stays behind the door.",
+    "force": "orchestration_graph",
+    "when": [
+      "make something AND (find a path OR fold one voice OR judge a gap)",
+      "three or more clauses longer than 18 characters",
+      "longer than 340 characters AND make something"
+    ]
+  },
+  "skills": [
+    {
+      "id": "adventure",
+      "mode": "create-mode",
+      "skill_graph": "fanout",
+      "seam": "The player still meets one party."
+    },
+    {
+      "id": "artifact",
+      "mode": "creative-artifact-ship",
+      "skill_graph": "chain",
+      "seam": "The maker keeps the signature."
+    },
+    {
+      "id": "grok-one",
+      "mode": "grok-one",
+      "skill_graph": "chain",
+      "seam": "Advice folds before it speaks."
+    }
+  ],
+  "graphs": {
+    "orchestration_graph": [
+      "chain",
+      "quiet"
+    ],
+    "skill_graph": [
+      "fanout",
+      "chain"
+    ],
+    "note": "Huddle forces orchestration_graph chain. skill_graph is the skill's own graph. Never one field for both."
+  },
+  "schemas": {
+    "helix.bridge.v1": {
+      "role": "configuration a runtime forges",
+      "fields": [
+        "type",
+        "runtime",
+        "face",
+        "skill",
+        "ingress",
+        "refuse",
+        "orchestration_graph",
+        "skill_graph",
+        "seam",
+        "melody"
+      ]
+    },
+    "helix.result.v1": {
+      "role": "one envelope after the fold",
+      "fields": [
+        "type",
+        "runtime",
+        "face",
+        "skill",
+        "ingress",
+        "refuse",
+        "orchestration_graph",
+        "skill_graph",
+        "seam",
+        "melody",
+        "trust"
+      ],
+      "trust": "edge"
+    }
+  }
+}
