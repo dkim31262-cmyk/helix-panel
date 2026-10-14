@@ -8,6 +8,8 @@ rmSync("dist", { recursive: true, force: true });
 mkdirSync("dist");
 for (const name of [
   "index.html",
+  "evolution.html",
+  "evolution.js",
   "mandate.txt",
   "mandate.th.txt",
   "helix.schema.json",

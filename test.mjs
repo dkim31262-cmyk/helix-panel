@@ -65,6 +65,13 @@ assert(bridge.melody === "one sentence the learner can carry", "melody must be o
 assert(!("graph" in bridge), "one graph field is the collision");
 assert(renderIndex() === html, "renderIndex is not the page on disk");
 
+const evo = read("evolution.html");
+const evoJs = read("evolution.js");
+assert(evo.includes('src="evolution.js"'), "Evolution HUD must use external JS under CSP");
+assert(evo.includes('id="hud"') && evo.includes('id="family"') && evo.includes('id="ledger"'), "Evolution HUD sections missing");
+assert(evoJs.includes("const FAMILY=") && evoJs.includes("function choose()"), "Evolution routing script missing");
+assert(html.includes('href="evolution.html"'), "Main Helix panel needs Evolution HUD entry");
+
 if (failed) {
   console.error(failed + " failed");
   process.exit(1);
