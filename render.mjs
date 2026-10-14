@@ -153,6 +153,7 @@ export function renderIndex() {
     <p class="url">${ORIGIN}/</p>
     <button class="primary" id="copy-link" type="button">${pair(UI.copyLink.en, UI.copyLink.th)}</button>
   </section>
+  <div class="row" id="evolution-door"><a class="btn primary" href="evolution.html"><span lang="en">Open Evolution HUD · Decision Engine</span><span lang="th">เปิด Evolution HUD · ระบบเลือกผู้ช่วย</span></a></div>
   <h1 lang="en">${UI.headline.en}</h1>
   <p class="th" lang="th">${UI.headline.th}</p>
   <p class="muted" lang="en">${UI.lede.en}</p>
