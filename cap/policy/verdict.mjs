@@ -6,7 +6,11 @@ export function verifyReceipt(receipt,{knownArtifacts={},reviewerEvidence={}}={}
  const reasons=[];if(receipt.status!=='succeeded_observed')reasons.push('not observed success');
  if(!receipt.evidence_refs.length)reasons.push('missing evidence');
  if(receipt.evidence_refs.some(e=>!allowed[receipt.claim_type].includes(e.kind)||!has(knownArtifacts,e.uri)))reasons.push('wrong proof or unresolved reference');
- if(receipt.verifier_role==='independent_review'&&!has(reviewerEvidence,receipt.id))reasons.push('independent review not independently substantiated');
+ if(receipt.verifier_role==='independent_review'){
+  const proof=reviewerEvidence instanceof Map?reviewerEvidence.get(receipt.id):reviewerEvidence?.[receipt.id];
+  const documented=receipt.claim_type==='reviewer_signed'&&receipt.provenance.kind==='authenticated_tool'&&proof?.verified===true&&proof.source==='authenticated_tool'&&proof.reviewerId===receipt.tool_or_actor&&receipt.evidence_refs.some(e=>e.uri===proof.artifactRef);
+  if(!documented)reasons.push('independent review requires authenticated, distinct reviewer evidence');
+ }
  return{usable:!reasons.length,reasons};
 }
 export function verifyTddChronology({redReceipt,firstImplementation,greenReceipt}){
@@ -15,13 +19,16 @@ export function verifyTddChronology({redReceipt,firstImplementation,greenReceipt
  const [a,b,c]=[redReceipt.observed_at,firstImplementation.committed_at,greenReceipt.observed_at].map(Date.parse);
  return{verified:Number.isFinite(a)&&Number.isFinite(b)&&Number.isFinite(c)&&a<b&&b<c,reason:a<b&&b<c?'observed in TDD order':'TDD chronology invalid'};
 }
-export function evaluateOutcome({task,receipts,deliveredRefs,knownArtifacts={},approvalState={approved:false},reviewerStatus='not_reviewed',nowIso}){
- validateCapRecord('task',task);const known=receipts.filter(r=>verifyReceipt(r,{knownArtifacts}).usable);
+export function evaluateOutcome({task,receipts,deliveredRefs,knownArtifacts={},reviewerEvidence={},approvalState={approved:false},reviewerStatus='not_reviewed',nowIso}){
+ validateCapRecord('task',task);const known=receipts.filter(r=>verifyReceipt(r,{knownArtifacts,reviewerEvidence}).usable);
+ const contributingActors=new Set(receipts.filter(r=>r.claim_type!=='reviewer_signed').map(r=>r.tool_or_actor));
+ const reviewProven=known.some(r=>r.claim_type==='reviewer_signed'&&r.verifier_role==='independent_review'&&r.provenance.kind==='authenticated_tool'&&!contributingActors.has(r.tool_or_actor));
+ const reviewer_status=reviewerStatus==='independent_review'&&!reviewProven?'not_reviewed':reviewerStatus;
  const verdicts=task.acceptance_checks.map(check=>{const xs=known.filter(r=>r.step_id===check.check_id&&check.required_claim_types.includes(r.claim_type));return{check_id:check.check_id,passed:xs.length>0,receipt_ids:xs.map(x=>x.id),rationale:xs.length?'Observed evidence':'Unverified'}});
  const required=task.acceptance_checks.filter(c=>c.required),passed=required.filter(c=>verdicts.find(v=>v.check_id===c.check_id)?.passed).length;
  const gaps=required.filter(c=>!verdicts.find(v=>v.check_id===c.check_id)?.passed).map(c=>'Missing evidence: '+c.check_id);
  if(!deliveredRefs.length||!deliveredRefs.every(x=>has(knownArtifacts,x)))gaps.push('Unverified artifact');
  const blocked=task.consent_requirements.length>0&&!approvalState.approved;
  if(blocked)gaps.push('Missing explicit consent');
- return validateCapRecord('outcome',{schema_version:'cap.outcome.v1',id:createHash('sha256').update(task.task_id+'|'+nowIso).digest('hex').slice(0,32),created_at:nowIso,provenance:{kind:'policy_derived',reference:'cap/policy/verdict.mjs'},task_id:task.task_id,delivered_refs:deliveredRefs,acceptance_verdicts:verdicts,evidence_coverage:required.length?passed/required.length:1,known_gaps:gaps,reviewer_status:reviewerStatus,delivery_state:blocked?'blocked':gaps.length?'partial':'verified',recommendation_for_next_step:gaps.length?'Obtain missing evidence':'Complete'});
+ return validateCapRecord('outcome',{schema_version:'cap.outcome.v1',id:createHash('sha256').update(task.task_id+'|'+nowIso).digest('hex').slice(0,32),created_at:nowIso,provenance:{kind:'policy_derived',reference:'cap/policy/verdict.mjs'},task_id:task.task_id,delivered_refs:deliveredRefs,acceptance_verdicts:verdicts,evidence_coverage:required.length?passed/required.length:1,known_gaps:gaps,reviewer_status,delivery_state:blocked?'blocked':gaps.length?'partial':'verified',recommendation_for_next_step:gaps.length?'Obtain missing evidence':'Complete'});
 }

@@ -17,3 +17,9 @@ Work parity: NOT TESTED — no observed Work paired runs, blinded raters or conf
 Browser QC: NOT TESTED — no new public UI and no interactive Safari/Chrome investigation.
 Provider APIs: NOT CALLED. No spending, merging, production deployment, external publishing or private user data handling.
 TDD chronology is backed by local command ordering but is not independently attested.
+
+## 2026-10-16 Self-audit hardening after initial eight tasks
+
+A self-inspection found that an unverified caller-supplied reviewer_status could label an outcome independently reviewed. Added cap/tests/reviewer-gate.test.mjs to reject independent review claims without authenticated tool provenance, a review receipt, observed evidence, and a distinct reviewer identity.
+
+RED/GREEN evidence exists in sandbox local files /tmp/reviewer-red.log, /tmp/reviewer-second-red.log and /tmp/cap-full-green3.log. Logs are not independently signed. Observed test result: 38 tests, 38 pass, 0 fail. Legacy node test.mjs and local node build.mjs exited 0. No Work parity trial or independent subagent review was performed or claimed.
