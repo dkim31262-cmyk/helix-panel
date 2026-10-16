@@ -36,6 +36,7 @@ SELENE is a **reusable opt-in evidence method** within Luna Spark's existing Ref
 ## Checked / not checked
 - PASS: WebsitePublisher owner-authorized asset patch (4 JS operations, 1 CSS operation).
 - PASS: connector source readback includes all targeted anchors, JS compiles in V8, CSS selectors exist, unchanged HTML page hashes.
+- PASS (mocked DOM only): opt-in draft Save persisted to in-memory localStorage stub; `tried` revealed evidence review and saved an observation; `worse_for_me` suppressed the evidence review. Does not establish real browser/device PASS.
 - PENDING: real interactive browser journey, successful Save + reload, null/unavailable localStorage, Return after cancellation, older state migration, focus/keyboard, mobile iPhone, a11y, and negative-path outcome assertions.
 - NOT CLAIMED: UX validation, external review, clinical safety/efficacy, browser/device PASS, HELIX production deployment.
 - Browser testing could not be completed in the tool container because public website DNS/network access was unavailable.
