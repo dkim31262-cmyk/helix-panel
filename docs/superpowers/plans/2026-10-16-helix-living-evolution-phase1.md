@@ -74,14 +74,14 @@ Five failure cases particularly likely to hurt a real user; the precise tests be
 
 **Interfaces:**
 - validateSources(input: unknown): array of SourceRecord; throws on invalid input.
-- validateSignals(input: unknown): SignalsDocument; throws on invalid input.
-- validateApprovedModels(input: unknown): ApprovedModelsDocument; throws on invalid input.
+- validateSignals(input: unknown, sources: SourceRecord[]): SignalsDocument; throws on invalid input or mismatched source_id/source_url.
+- validateApprovedModels(input: unknown, sources: SourceRecord[]): ApprovedModelsDocument; throws on invalid input.
 - SourceRecord = {provider_id, source_id, https_url, source_kind, locale, enabled, trust_level}.
 - SignalsDocument = {schema_version:"helix.model-signals.v1",generated_at,last_attempt_at,source_statuses,signals}.
 - ApprovedModelsDocument = {schema_version:"helix.approved-models.v1",models}.
 - All timestamps are ISO UTC or null where a never-run initial state permits null.
 
-- [ ] Step 1 — Write failing tests in tests/observatory/schema.test.mjs: asserts validateSources accepts precisely identified official HTTPS hosts; refuses http://, localhost, private IPs, credentials, unexpected provider IDs, duplicate source_id and malformed URL; validateSignals rejects duplicate signal IDs, invalid date, mismatched source_url, non-candidate ingestion statuses and secret-like fields; validateApprovedModels rejects missing source URLs and unknown status/permission claims; accepts the empty initial valid JSON.
+- [ ] Step 1 — Write failing tests in tests/observatory/schema.test.mjs: asserts validateSources accepts precisely identified official HTTPS hosts; refuses http://, localhost, private IPs, credentials, unexpected provider IDs, duplicate source_id and malformed URL; validateSignals (with allowlisted sources argument) rejects duplicate signal IDs, invalid date, source_id/source_url mismatches, non-candidate ingestion statuses and secret-like fields; validateApprovedModels rejects missing source URLs and unknown status/permission claims; accepts the empty initial valid JSON.
 - [ ] Step 2 — Run node --test tests/observatory/schema.test.mjs. Expected FAIL because module and data do not yet exist.
 - [ ] Step 3 — Implement validators and initial data. Allowlist initial URLs from the approved spec: https://developers.openai.com/api/docs/models/all ; https://platform.claude.com/docs/en/models/overview ; https://ai.google.dev/gemini-api/docs/models ; https://docs.x.ai/ ; https://docs.dev.runwayml.com/guides/models/. Initial signals = empty arrays, generated_at:null, last_attempt_at:null; initial approved models=[]; DO NOT invent release data.
 - [ ] Step 4 — Run node --test tests/observatory/schema.test.mjs. Expected PASS for valid fixtures; all malicious/invalid fixtures rejected.
@@ -130,7 +130,7 @@ Five failure cases particularly likely to hurt a real user; the precise tests be
 
 - [ ] Step 1 — Write failing tests using temporary directories and injected fetchSource: initial baseline, repeated unchanged fetch, one changed source, mixed success/failure, all-sources-fail with previous data preserved, atomic-write failure keeps old JSON intact, and approved-models.json plus helix-contract.mjs unchanged byte-for-byte.
 - [ ] Step 2 — Run node --test tests/observatory/job.test.mjs. Expected FAIL for missing job entry.
-- [ ] Step 3 — Implement runObservatory, data validation, atomic write, and the CLI guarded against accidental execution when imported into Node tests. Log source count and failure count without claiming 100% market coverage.
+- [ ] Step 3 — Implement runObservatory, data validation against validateSources/validateSignals, atomic write, and the CLI guarded against accidental execution when imported into Node tests. Log source count and failure count without claiming 100% market coverage.
 - [ ] Step 4 — Run node --test tests/observatory/job.test.mjs and node --test tests/observatory/*.test.mjs. Expected PASS using only fixtures. Do NOT run the live collector against provider sites as a prerequisite for TDD.
 - [ ] Step 5 — Commit: git add scripts/check-model-sources.mjs tests/observatory/job.test.mjs && git commit -m "feat(helix): add reproducible AI source-change job".
 
@@ -156,9 +156,9 @@ Five failure cases particularly likely to hurt a real user; the precise tests be
 
 **Interfaces:** test.mjs remains the single prod-facing test gate. build.mjs must invoke test.mjs and then copy dist/ assets, including observatory-ui.mjs, data/model-signals.json -> dist/model-signals.json, and data/approved-models.json -> dist/approved-models.json. Keep all previous copied files.
 
-- [ ] Step 1 — Add failing integration assertions to test.mjs: data validation succeeds; new HTML module and #ai-pulse mount are present; new JSON assets are included in dist after build; no approved-models mutation by collector; existing FAMILY, WEIGHTS, GROUNDS, choose() and the Helix contract/main URL still appear intact. Preserve old contract checks, don't rewrite them.
+- [ ] Step 1 — Add failing integration assertions to test.mjs: data validation succeeds using validateSources and the cross-referenced public-data validators; new HTML module and #ai-pulse mount are present; build.mjs names the three new public assets in its explicit copy configuration (do not assert dist exists before build); no approved-models mutation by collector; existing FAMILY, WEIGHTS, GROUNDS, choose() and the Helix contract/main URL still appear intact. Preserve old contract checks, don't rewrite them.
 - [ ] Step 2 — Run node test.mjs. Expected FAIL until test runner/asset hooks are wired; existing Helix assertions still pass.
-- [ ] Step 3 — Extend test.mjs with an explicit spawn of node --test tests/observatory/*.test.mjs (expand the file list in Node or use shell-safe exact paths), and extend build.mjs's explicit copy list. Use cpSync with exact destinations for flattened JSON URLs; never copy private config or secrets to dist.
+- [ ] Step 3 — Extend test.mjs with an explicit spawn of node --test tests/observatory/*.test.mjs (expand the file list in Node or use shell-safe exact paths), and extend build.mjs's explicit copy list; validate the actual dist files only AFTER node build.mjs finishes. Use cpSync with exact destinations for flattened JSON URLs; never copy private config or secrets to dist.
 - [ ] Step 4 — Run node test.mjs then node build.mjs; both expected exit 0. Verify dist/ index.html, evolution.html, evolution.js, observatory-ui.mjs, mandate.txt, mandate.th.txt, helix.schema.json, model-signals.json, approved-models.json exist and parse where applicable. Also run git diff -- helix-contract.mjs render.mjs index.html mandate.txt mandate.th.txt helix.schema.json; expected empty.
 - [ ] Step 5 — Commit: git add build.mjs test.mjs && git commit -m "test(helix): gate public observatory on validated data and legacy contract".
 
