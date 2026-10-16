@@ -1,0 +1,54 @@
+name: HELIX AI Model Observatory
+on:
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: helix-observatory-main
+  cancel-in-progress: false
+jobs:
+  update-candidate-signals:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Check official sources (do not auto-approve model changes)
+        shell: bash
+        run: |
+          set +e
+          node scripts/check-model-sources.mjs
+          echo "collector_exit=$?" >> "$GITHUB_ENV"
+          exit 0
+      - name: Validate all Helix contracts and candidate data
+        run: node test.mjs
+      - name: Commit candidate-only data if changed
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add -- data/model-signals.json
+          staged="$(git diff --cached --name-only)"
+          if [ -n "$staged" ] && [ "$staged" != 'data/model-signals.json' ]; then
+            echo 'Unexpected staged changes; refusing push'
+            exit 1
+          fi
+          if git diff --cached --quiet; then exit 0; fi
+          git config user.name 'helix-observatory[bot]'
+          git config user.email 'helix-observatory[bot]@users.noreply.github.com'
+          git commit -m 'data(helix): record candidate official documentation changes'
+          git push origin HEAD:main
+      - name: Surface any partial collection failure
+        if: always()
+        shell: bash
+        run: |
+          if [ "${collector_exit:-0}" != '0' ]; then
+            echo 'At least one source failed. Previous observations remain visible with failure status.'
+            exit 1
+          fi
