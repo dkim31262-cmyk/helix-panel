@@ -1,4 +1,6 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { validateSources, validateSignals, validateApprovedModels } from "./scripts/observatory-schema.mjs";
 import { LAWS, ORIGIN, SKILLS, UI, forgeBridge, mandateEn, mandateTh, schema, sense } from "./helix-contract.mjs";
 import { renderIndex, renderedFiles } from "./render.mjs";
 
@@ -71,6 +73,17 @@ assert(evo.includes('src="evolution.js"'), "Evolution HUD must use external JS u
 assert(evo.includes('id="hud"') && evo.includes('id="family"') && evo.includes('id="ledger"'), "Evolution HUD sections missing");
 assert(evoJs.includes("const FAMILY=") && evoJs.includes("function choose()"), "Evolution routing script missing");
 assert(html.includes('href="evolution.html"'), "Main Helix panel needs Evolution HUD entry");
+
+const officialSources = validateSources(JSON.parse(read("config/model-sources.json")));
+validateSignals(JSON.parse(read("data/model-signals.json")), officialSources);
+validateApprovedModels(JSON.parse(read("data/approved-models.json")), officialSources);
+assert(evo.includes('id="ai-pulse"') && evo.includes('src="observatory-ui.mjs"'), "AI Pulse mount and external script missing");
+const buildText = read("build.mjs");
+assert(buildText.includes('dist/model-signals.json') && buildText.includes('dist/approved-models.json') && buildText.includes('observatory-ui.mjs'), "Observatory assets not declared for build");
+const unitFiles = readdirSync(new URL("./tests/observatory/", import.meta.url)).filter(n=>n.endsWith(".test.mjs")).map(n=>"tests/observatory/"+n);
+assert(unitFiles.length >= 6,"Observatory test suites missing");
+const suite = spawnSync(process.execPath, ["--test", ...unitFiles], {stdio:"inherit"});
+assert(suite.status === 0, "Observatory Node unit tests failed");
 
 if (failed) {
   console.error(failed + " failed");

@@ -10,6 +10,7 @@ for (const name of [
   "index.html",
   "evolution.html",
   "evolution.js",
+  "observatory-ui.mjs",
   "mandate.txt",
   "mandate.th.txt",
   "helix.schema.json",
@@ -21,3 +22,6 @@ for (const name of [
 ]) {
   cpSync(name, `dist/${name}`);
 }
+
+cpSync("data/model-signals.json", "dist/model-signals.json");
+cpSync("data/approved-models.json", "dist/approved-models.json");
