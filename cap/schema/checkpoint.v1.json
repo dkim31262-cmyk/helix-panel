@@ -1,0 +1,162 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helix-panel-gamma.vercel.app/cap/schema/checkpoint.v1.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cap.checkpoint.v1"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "synthetic",
+            "user_supplied",
+            "authenticated_tool",
+            "policy_derived"
+          ]
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "kind",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "state": {
+      "type": "string",
+      "enum": [
+        "framed",
+        "routed",
+        "in_progress",
+        "verifying",
+        "blocked",
+        "awaiting_approval",
+        "done_verified",
+        "done_partial"
+      ]
+    },
+    "goal_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "acceptance_state": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "minItems": 0
+    },
+    "completed_receipt_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "minItems": 0
+    },
+    "blocked_items": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "minItems": 0
+    },
+    "next_action": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "branch_or_artifact_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "minItems": 0
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "privacy_scope": {
+      "type": "string",
+      "enum": [
+        "public_synthetic",
+        "private",
+        "sensitive"
+      ]
+    },
+    "previous_checkpoint_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "sequence": {
+      "type": "integer",
+      "minimum": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "created_at",
+    "provenance",
+    "task_id",
+    "run_id",
+    "state",
+    "goal_ref",
+    "acceptance_state",
+    "completed_receipt_refs",
+    "blocked_items",
+    "next_action",
+    "branch_or_artifact_refs",
+    "updated_at",
+    "privacy_scope",
+    "previous_checkpoint_id",
+    "sequence"
+  ],
+  "additionalProperties": false
+}

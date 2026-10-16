@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helix-panel-gamma.vercel.app/cap/schema/capabilities.v1.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cap.capabilities.v1"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "synthetic",
+            "user_supplied",
+            "authenticated_tool",
+            "policy_derived"
+          ]
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "kind",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "entries": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tool_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "service_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "operation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "discovery_source": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "discovered_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "Z$"
+          },
+          "connected_state": {
+            "type": "string",
+            "enum": [
+              "confirmed",
+              "unconfirmed",
+              "unavailable"
+            ]
+          },
+          "permission_state": {
+            "type": "string",
+            "enum": [
+              "authorized",
+              "approval_required",
+              "denied",
+              "unknown"
+            ]
+          },
+          "observed_availability": {
+            "type": "string",
+            "enum": [
+              "available",
+              "unavailable",
+              "unknown"
+            ]
+          },
+          "cost_information": {
+            "anyOf": [
+              {
+                "type": "number",
+                "minimum": 0
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "limitations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            },
+            "minItems": 0
+          },
+          "context": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "tool_id",
+          "service_name",
+          "operation",
+          "discovery_source",
+          "discovered_at",
+          "connected_state",
+          "permission_state",
+          "observed_availability",
+          "cost_information",
+          "limitations",
+          "context"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "created_at",
+    "provenance",
+    "entries"
+  ],
+  "additionalProperties": false
+}

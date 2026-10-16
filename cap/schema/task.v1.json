@@ -1,0 +1,251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helix-panel-gamma.vercel.app/cap/schema/task.v1.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cap.task.v1"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "synthetic",
+            "user_supplied",
+            "authenticated_tool",
+            "policy_derived"
+          ]
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "kind",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "goal": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "task_class": {
+      "type": "string",
+      "enum": [
+        "research",
+        "software",
+        "document",
+        "creative",
+        "multimodal",
+        "cross_app"
+      ]
+    },
+    "deliverables": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "deliverable_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "format": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "required_operations": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "deliverable_id",
+          "description",
+          "format",
+          "required_operations"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "acceptance_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "criterion": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "required": {
+            "type": "boolean"
+          },
+          "required_claim_types": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "minItems": 0
+          }
+        },
+        "required": [
+          "check_id",
+          "criterion",
+          "required",
+          "required_claim_types"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 1
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "deadline": {
+          "anyOf": [
+            {
+              "type": "string",
+              "format": "date-time",
+              "pattern": "Z$"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "spending_cap": {
+          "anyOf": [
+            {
+              "type": "number",
+              "minimum": 0
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max_tools": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target_platforms": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "minItems": 0
+        },
+        "privacy_class": {
+          "type": "string",
+          "enum": [
+            "public",
+            "private",
+            "sensitive"
+          ]
+        }
+      },
+      "required": [
+        "deadline",
+        "spending_cap",
+        "max_tools",
+        "target_platforms",
+        "privacy_class"
+      ],
+      "additionalProperties": false
+    },
+    "evidence_level": {
+      "type": "string",
+      "enum": [
+        "none",
+        "source_cited",
+        "reproducible_test",
+        "inspected_artifact",
+        "browser_verified"
+      ]
+    },
+    "risk_tier": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "clinical_or_sensitive"
+      ]
+    },
+    "consent_requirements": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "created_at",
+    "provenance",
+    "task_id",
+    "goal",
+    "task_class",
+    "deliverables",
+    "acceptance_checks",
+    "constraints",
+    "evidence_level",
+    "risk_tier",
+    "consent_requirements"
+  ],
+  "additionalProperties": false
+}

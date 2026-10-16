@@ -1,0 +1,146 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helix-panel-gamma.vercel.app/cap/schema/outcome.v1.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cap.outcome.v1"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "synthetic",
+            "user_supplied",
+            "authenticated_tool",
+            "policy_derived"
+          ]
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "kind",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "delivered_refs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "minItems": 0
+    },
+    "acceptance_verdicts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "check_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "receipt_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "minItems": 0
+          },
+          "rationale": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "check_id",
+          "passed",
+          "receipt_ids",
+          "rationale"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "evidence_coverage": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "known_gaps": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "minItems": 0
+    },
+    "reviewer_status": {
+      "type": "string",
+      "enum": [
+        "self_review",
+        "independent_review",
+        "not_reviewed"
+      ]
+    },
+    "delivery_state": {
+      "type": "string",
+      "enum": [
+        "verified",
+        "partial",
+        "blocked"
+      ]
+    },
+    "recommendation_for_next_step": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "created_at",
+    "provenance",
+    "task_id",
+    "delivered_refs",
+    "acceptance_verdicts",
+    "evidence_coverage",
+    "known_gaps",
+    "reviewer_status",
+    "delivery_state",
+    "recommendation_for_next_step"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,184 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helix-panel-gamma.vercel.app/cap/schema/receipt.v1.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cap.receipt.v1"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "synthetic",
+            "user_supplied",
+            "authenticated_tool",
+            "policy_derived"
+          ]
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "kind",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "step_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "tool_or_actor": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "operation": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "input_reference": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "output_reference": {
+      "anyOf": [
+        {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planned",
+        "attempted",
+        "succeeded_observed",
+        "failed_observed",
+        "blocked",
+        "unverified"
+      ]
+    },
+    "claim_type": {
+      "type": "string",
+      "enum": [
+        "produced_artifact",
+        "source_checked",
+        "test_failed_red",
+        "test_passed_green",
+        "build_passed",
+        "browser_tested",
+        "external_action_confirmed",
+        "reviewer_signed"
+      ]
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "uri": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "kind": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "observed_at": {
+            "type": "string",
+            "format": "date-time",
+            "pattern": "Z$"
+          }
+        },
+        "required": [
+          "uri",
+          "kind",
+          "observed_at"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "verifier_role": {
+      "type": "string",
+      "enum": [
+        "self_review",
+        "independent_review",
+        "automated_test",
+        "observed_tool"
+      ]
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 1000
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "created_at",
+    "provenance",
+    "task_id",
+    "step_id",
+    "tool_or_actor",
+    "operation",
+    "observed_at",
+    "input_reference",
+    "output_reference",
+    "status",
+    "claim_type",
+    "evidence_refs",
+    "verifier_role",
+    "limitations"
+  ],
+  "additionalProperties": false
+}

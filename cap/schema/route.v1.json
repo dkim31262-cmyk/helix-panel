@@ -1,0 +1,216 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://helix-panel-gamma.vercel.app/cap/schema/route.v1.json",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "cap.route.v1"
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "Z$"
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "synthetic",
+            "user_supplied",
+            "authenticated_tool",
+            "policy_derived"
+          ]
+        },
+        "reference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 1000
+        }
+      },
+      "required": [
+        "kind",
+        "reference"
+      ],
+      "additionalProperties": false
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "orchestration_graph_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "skill_graph_ref": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "effort_band": {
+      "type": "string",
+      "enum": [
+        "quick",
+        "managed",
+        "intensive"
+      ]
+    },
+    "chosen_steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "operation": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "tool_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "step_id",
+          "operation",
+          "tool_id"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "tool_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "tool_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "eligible": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          }
+        },
+        "required": [
+          "tool_id",
+          "eligible",
+          "reason"
+        ],
+        "additionalProperties": false
+      },
+      "minItems": 0
+    },
+    "fallback": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "type": "string",
+              "enum": [
+                "blocked",
+                "needs_user_handoff_to_work"
+              ]
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 1000
+            }
+          },
+          "required": [
+            "kind",
+            "reason"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "why": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "expected_qc": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 128
+    },
+    "estimated_cost_range": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "min": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "min",
+            "max"
+          ],
+          "additionalProperties": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "approval_gates": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 128
+      },
+      "minItems": 0
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "created_at",
+    "provenance",
+    "task_id",
+    "orchestration_graph_ref",
+    "skill_graph_ref",
+    "effort_band",
+    "chosen_steps",
+    "tool_candidates",
+    "fallback",
+    "why",
+    "expected_qc",
+    "estimated_cost_range",
+    "approval_gates"
+  ],
+  "additionalProperties": false
+}
